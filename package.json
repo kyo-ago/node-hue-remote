@@ -1,0 +1,33 @@
+{
+  "name": "node-hue-remote",
+  "version": "0.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "dependencies": {
+    "request": "~2.34.0",
+    "async": "^0.2.10",
+    "lodash": "^2.4.1"
+  },
+  "devDependencies": {
+    "grunt-version": "^0.3.0",
+    "grunt": "^0.4.4",
+    "mocha": "^1.18.2",
+    "chai": "~1.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kyo-ago/node-hue-remote.git"
+  },
+  "keywords": [
+    "hue"
+  ],
+  "author": "kyo_ago",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kyo-ago/node-hue-remote/issues"
+  },
+  "homepage": "https://github.com/kyo-ago/node-hue-remote"
+}
