@@ -3,6 +3,15 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    'esteWatch': {
+      options: {
+        dirs: ['lib', 'test'],
+        livereload: {
+          enabled: false
+        }
+      },
+      '*': function() { return 'mocha-chai-sinon'; }
+    },
     'version': {
       options: {
         release: 'patch'
@@ -13,7 +22,7 @@ module.exports = function(grunt) {
     },
     'mocha-chai-sinon': {
       build: {
-        src: ['./test/**/*.js'],
+        src: ['./lib/*.js', './test/*.js'],
         options: {
           ui: 'bdd',
           reporter: 'spec'
@@ -22,8 +31,10 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.loadNpmTasks("grunt-mocha-chai-sinon");
+  grunt.loadNpmTasks('grunt-mocha-chai-sinon');
   grunt.loadNpmTasks('grunt-version');
+  grunt.loadNpmTasks('grunt-este-watch');
 
   grunt.registerTask('test', ['mocha-chai-sinon']);
+  grunt.registerTask('default', ['test', 'esteWatch']);
 };
