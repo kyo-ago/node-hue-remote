@@ -11,6 +11,22 @@ describe('HueRemote', function () {
     'username' : 'newdeveloper'
   };
 
+  before(function () {
+    sinon
+      .stub(request, 'get')
+      .yields(null, null, JSON.stringify({login: "bulkan"}))
+    ;
+    sinon
+      .stub(request, 'post')
+      .yields(null, null, JSON.stringify({login: "bulkan"}))
+    ;
+  });
+
+  after(function () {
+    request.get.restore();
+    request.post.restore();
+  });
+
   describe('constructor', function () {
     it('should successfl', function () {
       expect(function () {
