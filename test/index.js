@@ -5,27 +5,6 @@ describe('HueRemote', function () {
       'email': '',
       'password': ''
   };
-  var bridgeid = '';
-  var initializeParameter = {
-    'devicetype' : 'Huedevicetype',
-    'username' : 'newdeveloper'
-  };
-
-  before(function () {
-    sinon
-      .stub(request, 'get')
-      .yields(null, null, JSON.stringify({login: "bulkan"}))
-    ;
-    sinon
-      .stub(request, 'post')
-      .yields(null, null, JSON.stringify({login: "bulkan"}))
-    ;
-  });
-
-  after(function () {
-    request.get.restore();
-    request.post.restore();
-  });
 
   describe('constructor', function () {
     it('should successfl', function () {
@@ -41,7 +20,7 @@ describe('HueRemote', function () {
   describe('sessionId', function () {
     var hue = new HueRemote({'account' : account});
     it('should successfl', function (done) {
-      this.timeout(15000);
+      this.timeout(30000);
       hue.getSessionId(function (error, sessionId) {
         expect(error).to.eql(null);
         expect(!!sessionId).to.not.be.false;
@@ -64,7 +43,7 @@ describe('HueRemote', function () {
   describe('bridgeId', function () {
     var hue = new HueRemote({'account' : account});
     it('should successfl', function (done) {
-      this.timeout(15000);
+      this.timeout(30000);
       hue.getBridgeId(function (error, sessionId, bridgeId) {
         expect(error).to.eql(null);
         expect(!!sessionId).to.not.be.false;
@@ -88,37 +67,72 @@ describe('HueRemote', function () {
       sync = false;
     });
   });
-  // describe('getStatus', function () {
-  //   it('should successfl', function (done) {
-  //     var hue = new HueRemote({
-  //       'account' : account,
-  //       'bridgeid' : bridgeid
-  //     });
-  //     hue.getStatus(function (error, response, body) {
-  //       console.log(arguments.length)
-  //       expect(null).to.eql(null);
-  //       done();
-  //     });
-  //   });
-  // });
-      // getAccessToken(account, bridgeid, function (accessToken, sessionId) {
-      //   // getStatus(accessToken, bridgeid, function (error, response, body) {
-      //   //   console.log(body)
-      //   // });
-      //   sendCommand(accessToken, sessionId, bridgeid, {
-      //     'url' : '/api/0/api',
-      //     'method' : 'POST',
-      //     'body' : initializeParameter
-      //   }, function (error, response, body) {
-      //     sendCommand(accessToken, sessionId, bridgeid, {
-      //       'url' : '/api/0/lights/3/state',
-      //       'method' : 'PUT',
-      //       'body' : {
-      //         'on' : true
-      //       }
-      //     }, function (error, response, body) {
-      //       console.log(body);
-      //     });
-      //   });
-      // });
+  describe('accessToken', function () {
+    var hue = new HueRemote({'account' : account});
+    it('should successfl', function (done) {
+      this.timeout(30000);
+      hue.getAccessToken(function (error, sessionId, bridgeId, accessToken) {
+        expect(error).to.eql(null);
+        expect(!!sessionId).to.not.be.false;
+        expect(!!bridgeId).to.not.be.false;
+        expect(!!accessToken).to.not.be.false;
+        hue.setSessionId(sessionId);
+        hue.setBridgeId(bridgeId);
+        hue.setAccessToken(accessToken);
+        done();
+      });
+    });
+    it('should be retried to successfl', function (done) {
+      var sync = true;
+      hue.getAccessToken(function (error, sessionId, bridgeId, accessToken) {
+        expect(error).to.eql(null);
+        expect(!!sessionId).to.not.be.false;
+        expect(!!bridgeId).to.not.be.false;
+        expect(!!accessToken).to.not.be.false;
+        expect(hue.sessionId).to.eql(sessionId);
+        expect(hue.bridgeId).to.eql(bridgeId);
+        expect(hue.accessToken).to.eql(accessToken);
+        expect(sync).to.be.false;
+        done();
+      });
+      sync = false;
+    });
+  });
+  describe('getStatus', function () {
+    it('should successfl', function (done) {
+      this.timeout(30000);
+      var hue = new HueRemote({
+        'account' : account,
+        'bridgeid' : bridgeid
+      });
+      hue.getStatus(function (error, response, body) {
+        expect(body.length).to.not.eql(0);
+        done();
+      });
+    });
+  });
+  describe('sendCommand', function () {
+    var hue = new HueRemote({'account' : account});
+    it('should successfl', function (done) {
+      this.timeout(30000);
+      hue.sendCommand({
+        'url' : '/api/0/lights/3/state',
+        'method' : 'POST',
+        'body' : {
+          'on' : false
+        }
+      }, function (error, sessionId, bridgeId, accessToken, body) {
+        console.log(body)
+        expect(error).to.eql(null);
+        expect(!!sessionId).to.not.be.false;
+        expect(!!bridgeId).to.not.be.false;
+        expect(!!accessToken).to.not.be.false;
+        expect(!!body).to.not.be.false;
+        hue.setSessionId(sessionId);
+        hue.setBridgeId(bridgeId);
+        hue.setAccessToken(accessToken);
+        done();
+      });
+    });
+  });
 });
