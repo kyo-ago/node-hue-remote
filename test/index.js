@@ -2,8 +2,18 @@ var HueRemote = require('../lib/HueRemote');
 
 describe('HueRemote', function () {
   var account = {
-      'email': '',
-      'password': ''
+    'email': '',
+    'password': ''
+  };
+  if (!account.email || !account.password) {
+    console.warn('-----------------');
+    console.warn('Required account!');
+    console.warn('-----------------');
+    return;
+  }
+  var initializeParameter = {
+    'devicetype' : 'HueRemote test',
+    'username' : 'newdeveloper'
   };
 
   describe('constructor', function () {
@@ -102,8 +112,7 @@ describe('HueRemote', function () {
     it('should successfl', function (done) {
       this.timeout(30000);
       var hue = new HueRemote({
-        'account' : account,
-        'bridgeid' : bridgeid
+        'account' : account
       });
       hue.getStatus(function (error, response, body) {
         expect(body.length).to.not.eql(0);
@@ -116,18 +125,37 @@ describe('HueRemote', function () {
     it('should successfl', function (done) {
       this.timeout(30000);
       hue.sendCommand({
-        'url' : '/api/0/lights/3/state',
+        'url' : '/api/0/api',
         'method' : 'POST',
-        'body' : {
-          'on' : false
-        }
+        'body' : initializeParameter
       }, function (error, sessionId, bridgeId, accessToken, body) {
-        console.log(body)
         expect(error).to.eql(null);
         expect(!!sessionId).to.not.be.false;
         expect(!!bridgeId).to.not.be.false;
         expect(!!accessToken).to.not.be.false;
         expect(!!body).to.not.be.false;
+        expect(JSON.parse(body).result).to.be.eql('ok');
+        hue.setSessionId(sessionId);
+        hue.setBridgeId(bridgeId);
+        hue.setAccessToken(accessToken);
+        done();
+      });
+    });
+    it('should successfl', function (done) {
+      this.timeout(30000);
+      hue.sendCommand({
+        'url' : '/api/0/lights/3/state',
+        'method' : 'PUT',
+        'body' : {
+          'on' : false
+        }
+      }, function (error, sessionId, bridgeId, accessToken, body) {
+        expect(error).to.eql(null);
+        expect(!!sessionId).to.not.be.false;
+        expect(!!bridgeId).to.not.be.false;
+        expect(!!accessToken).to.not.be.false;
+        expect(!!body).to.not.be.false;
+        expect(JSON.parse(body).result).to.be.eql('ok');
         hue.setSessionId(sessionId);
         hue.setBridgeId(bridgeId);
         hue.setAccessToken(accessToken);
