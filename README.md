@@ -33,6 +33,10 @@ hue.sendCommand({
   if (error || (response.result !== 'ok')) {
     throw new Error(error || body);
   }
+  // save to cache.
+  hue.setSessionId(sessionId);
+  hue.setBridgeId(bridgeId);
+  hue.setAccessToken(accessToken);
 });
 ```
 
