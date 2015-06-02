@@ -1,4 +1,4 @@
-var HueRemote = require('../lib/HueRemote');
+var HueRemote = require('../');
 
 describe('HueRemote', function () {
   var account = {
