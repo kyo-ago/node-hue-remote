@@ -1,3 +1,8 @@
+This library is deprecated
+===============
+
+Doesn't work on now.
+
 node-hue-remote
 ===============
 
